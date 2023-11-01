@@ -14,14 +14,14 @@ const struct DeviceInfo PROGMEM devinfo = {
     {0x54,0x46},            	// Device Model
     0x10,                   	// Firmware Version
     as::DeviceType::THSensor, 	// Device Type
-    {0x01, 0x01}               	// Info Bytes
+    {0x01, 0x00}               	// Info Bytes
 };
 
 typedef LibSPI<CC1101_CS_PIN> RadioSPI;
-typedef AskSin<StatusLed<LED_PIN>,BatterySensor,Radio<RadioSPI,CC1101_GDO0_PIN> > Hal;
+typedef AskSin<StatusLed<LED_PIN>,NoBattery,Radio<RadioSPI,CC1101_GDO0_PIN> > Hal;
 Hal hal;
 
-DEFREGISTER(UReg0, MASTERID_REGS, DREG_LOWBATLIMIT, 0x21, 0x22)
+DEFREGISTER(UReg0, MASTERID_REGS, 0x21, 0x22)
 class UList0 : public RegList0<UReg0> 
 {
 	public:
@@ -44,11 +44,11 @@ class UList0 : public RegList0<UReg0>
 class WeatherEventMsg : public Message 
 {
 	public:
-    	void init(uint8_t msgcnt, int16_t* temp, int8_t* hum, bool batlow) 
+    	void init(uint8_t msgcnt, int16_t* temp, int8_t* hum) 
 		{
 			uint8_t t1 = (temp[0] >> 8) & 0x7f;
 			uint8_t t2 = temp[0] & 0xff;
-			Message::init(11+7, msgcnt, 0x70, (msgcnt % 20 == 1) ? (BIDI | WKMEUP) : BCAST, t1, t2);
+			Message::init(11+7, msgcnt, 0x70, BIDI | WKMEUP, t1, t2);
 			pload[0] = hum[0];
 
 			pload[1] = (temp[1] >> 8) & 0x7f;
@@ -95,7 +95,7 @@ class UType : public MultiChannelDevice<Hal, WeatherChannel, MAX_SENSORS, UList0
         	virtual void trigger (__attribute__ ((unused)) AlarmClock& clock) 
 			{
           		tick = delay();
-          		sysclock.add(*this);
+          		clock.add(*this);
 				sensors[0] 	= mqtt->mTemp1.toInt();
 				humidity[0]	= mqtt->mHum1.toInt();
 				sensors[1]	= mqtt->mTemp2.toInt();
@@ -104,8 +104,9 @@ class UType : public MultiChannelDevice<Hal, WeatherChannel, MAX_SENSORS, UList0
 				humidity[2]	= mqtt->mHum3.toInt();
 
           		WeatherEventMsg& msg = (WeatherEventMsg&)dev.message();
-          		msg.init(dev.nextcount(), sensors, humidity, dev.battery().low());
-          		dev.send(msg, dev.getMasterID());
+          		msg.init(dev.nextcount(), sensors, humidity);
+				dev.broadcastEvent(msg);
+          		//dev.send(msg, dev.getMasterID());
 				DPRINT("SENDE");
         	}
 
