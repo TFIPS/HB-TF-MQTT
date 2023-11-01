@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<device version="2" rx_modes="CONFIG,WAKEUP,LAZY_CONFIG" cyclic_timeout="1200">
+<device version="2" cyclic_timeout="3600">
 	<supported_types>
     	<type name="HB-TF-MQTT" id="HB-TF-MQTT" updatable="true">
       		<parameter index="9.0" size="1.0" cond_op="GE" const_value="12" />
@@ -28,12 +28,6 @@
           			<logical type="boolean" />
           			<physical type="integer" interface="internal" value_id="CONFIG_PENDING" />
         		</parameter>
-        		<parameter id="LOWBAT" operations="read,event" ui_flags="service" control="NONE">
-            		<logical type="boolean" />
-            		<physical type="integer" interface="command" value_id="LOWBAT">
-               			<event frame="MEASURE_EV_BAT" />
-            		</physical>
-        		</parameter>
         		<parameter id="RSSI_DEVICE" operations="read,event">
           			<logical type="integer" />
           			<physical type="integer" interface="internal" value_id="RSSI_DEVICE" />
@@ -56,8 +50,8 @@
       		<link_roles>
         		<source name="WEATHER_TH" />
       		</link_roles>
-      		<paramset type="MASTER" id="HB-TF-MQTT_master" />
-      		<paramset type="VALUES" id="HB-TF-MQTT_values">
+      		<paramset type="MASTER" id="hb_tf_mqtt_ch_master" />
+      		<paramset type="VALUES" id="hb_tf_mqtt_ch_values">
 				<parameter id="TEMPERATURE" operations="read,event">
             		<logical type="float" min="-40.0" max="80.0" unit="Grad" />
                		<physical type="integer" interface="command" value_id="TEMPERATURE">
@@ -78,7 +72,7 @@
                		</description>
             	</parameter>
 			</paramset> 
-			<paramset type="LINK" id="HB-TF-MQTT_link"></paramset>
+			<paramset type="LINK" id="hb_tf_mqtt_ch_link"></paramset>
     	</channel>
   </channels>
    	<frames>
