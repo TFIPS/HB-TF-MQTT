@@ -27,6 +27,7 @@
 #define PEERS_PER_CHANNEL           6
 #define MSG_INTERVAL                180
 #define MAX_SENSORS                 3
+#define EXTRAMILLIS 730
 
 #define DEVICEID                    String(ESP.getEfuseMac(),HEX)
 #define DEVICETYPE                  "hbtfmqtt"

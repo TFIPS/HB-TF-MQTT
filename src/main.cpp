@@ -21,7 +21,7 @@ typedef LibSPI<CC1101_CS_PIN> RadioSPI;
 typedef AskSin<StatusLed<LED_PIN>,NoBattery,Radio<RadioSPI,CC1101_GDO0_PIN> > Hal;
 Hal hal;
 
-DEFREGISTER(UReg0, MASTERID_REGS, 0x21, 0x22)
+DEFREGISTER(UReg0, MASTERID_REGS, DREG_BURSTRX, 0x21, 0x22)
 class UList0 : public RegList0<UReg0> 
 {
 	public:
@@ -119,6 +119,7 @@ class UType : public MultiChannelDevice<Hal, WeatherChannel, MAX_SENSORS, UList0
         	}
 
     } sensarray;
+	
 
 	public:
     	typedef MultiChannelDevice<Hal, WeatherChannel, MAX_SENSORS, UList0> TSDevice;

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-8859-1"?>
-<device version="2" cyclic_timeout="3600">
+<device version="2" rx_modes="CONFIG,WAKEUP" cyclic_timeout="3600">
 	<supported_types>
     	<type name="HB-TF-MQTT" id="HB-TF-MQTT" updatable="true">
       		<parameter index="9.0" size="1.0" cond_op="GE" const_value="12" />
@@ -7,6 +7,10 @@
     	</type>
   	</supported_types>
   	<paramset type="MASTER" id="hb_tf_mqtt_dev_master">
+		<parameter id="BURST_RX">
+            <logical type="boolean" default="false"/>
+            <physical type="integer" interface="config" list="0" index="1" size="1.0"/>
+        </parameter>
 		<parameter id="HBWEA_TRANSMIT_INTERVAL">                       
       		<logical type="integer" min="60" max="600" unit="s" default="180" />
       		<physical type="integer" interface="config" list="0" index="33.0" size="2" />
