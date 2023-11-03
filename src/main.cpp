@@ -18,7 +18,7 @@ const struct DeviceInfo PROGMEM devinfo = {
 };
 
 typedef LibSPI<CC1101_CS_PIN> RadioSPI;
-typedef AskSin<StatusLed<LED_PIN>,NoBattery,Radio<RadioSPI,CC1101_GDO0_PIN> > Hal;
+typedef AskSinRTC<StatusLed<LED_PIN>,NoBattery,Radio<RadioSPI,CC1101_GDO0_PIN> > Hal;
 Hal hal;
 
 DEFREGISTER(UReg0, MASTERID_REGS, DREG_BURSTRX, 0x21, 0x22)
@@ -95,7 +95,7 @@ class UType : public MultiChannelDevice<Hal, WeatherChannel, MAX_SENSORS, UList0
         	virtual void trigger (__attribute__ ((unused)) AlarmClock& clock) 
 			{
           		tick = delay();
-          		clock.add(*this);
+          		sysclock.add(*this);
 				sensors[0] 	= mqtt->mTemp1.toInt();
 				humidity[0]	= mqtt->mHum1.toInt();
 				sensors[1]	= mqtt->mTemp2.toInt();
@@ -105,6 +105,7 @@ class UType : public MultiChannelDevice<Hal, WeatherChannel, MAX_SENSORS, UList0
 
           		WeatherEventMsg& msg = (WeatherEventMsg&)dev.message();
           		msg.init(dev.nextcount(), sensors, humidity);
+				//dev.sendPeerEvent(msg, *this);
 				dev.broadcastEvent(msg);
           		//dev.send(msg, dev.getMasterID());
 				DPRINT("SENDE");

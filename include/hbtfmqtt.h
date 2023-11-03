@@ -17,10 +17,10 @@
 
 
 // #define USE_HW_SERIAL
-#define NORTC
+#define USE_RTC
 
-#define LED_PIN                     22
-#define CONFIG_BUTTON_PIN           34
+#define LED_PIN                     32
+#define CONFIG_BUTTON_PIN           33
 #define CC1101_GDO0_PIN             2
 #define CC1101_CS_PIN               5
 
